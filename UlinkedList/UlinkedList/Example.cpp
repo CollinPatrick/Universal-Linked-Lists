@@ -9,8 +9,6 @@ struct Person
 {
 	string name;
 	int age;
-	Person *next = NULL;
-	Person *previous = NULL;
 };
 
 int main()
