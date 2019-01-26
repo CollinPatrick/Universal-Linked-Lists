@@ -3,6 +3,8 @@ template<typename Type>
 class UlinkedList
 {
 	//~UlinkedLists();
+private:
+	ListNode * head = NULL, *tail = NULL;
 public:
 
 	//Container for linked list nodes
@@ -13,8 +15,6 @@ public:
 		ListNode *next = NULL;
 		ListNode *previous = NULL;
 	};
-
-	ListNode *head = NULL, *tail = NULL;
 
 	//-returns number of objects in list
 	int Count()
