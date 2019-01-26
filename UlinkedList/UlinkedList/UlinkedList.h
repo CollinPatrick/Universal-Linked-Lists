@@ -4,9 +4,6 @@ class UlinkedList
 {
 	//~UlinkedLists();
 private:
-	ListNode * head = NULL, *tail = NULL;
-public:
-
 	//Container for linked list nodes
 	struct ListNode
 	{
@@ -16,18 +13,14 @@ public:
 		ListNode *previous = NULL;
 	};
 
+	ListNode * head = NULL, *tail = NULL;
+	int count = 0;
+public:
 	//-returns number of objects in list
 	int Count()
 	{
-		ListNode *temp = head;
-		int count = 0;
-		while (temp != NULL)
-		{
-			count++;
-			temp = temp->next;
-		}
 		return count;
-	};
+	}
 
 	//-Creates an object of specified Type at top of stack
 	Type *CreateAtTop()
@@ -48,6 +41,7 @@ public:
 		{
 			tail = listNode;
 		}
+		count++;
 		return listNode->node;
 	};
 
@@ -69,6 +63,7 @@ public:
 		{
 			head = listNode;
 		}
+		count++;
 		return listNode->node;
 	};
 
@@ -77,16 +72,16 @@ public:
 	//-throws error and returns null if specified index is out of bounds
 	Type *CreateAtIndex(int index)
 	{
-		if (index >= Count() || index < 0)
+		if (index >= count || index < 0)
 		{
 			cout << "Index out of bounds" << endl;
 			return NULL;
 		}
 		
-		int count = Count();
+		int c = count;
 
 		//checks if index is top or bottom of list
-		if (index == count)
+		if (index == c)
 		{
 			return CreateAtBottom();
 		}
@@ -97,23 +92,23 @@ public:
 
 		ListNode *iterator;
 		
-		if (index > (count / 2))
+		if (index > (c / 2))
 		{
 			iterator = tail;
-			while (count >= index)
+			while (c >= index)
 			{
 				iterator = iterator->previous;
-				count--;
+				c--;
 			}
 		}
 		else
 		{
 			iterator = head;
-			count = 0;
-			while (count < index)
+			c = 0;
+			while (c < index)
 			{
 				iterator = iterator->next;
-				count++;
+				c++;
 			}
 		}
 		Type *temp = new Type;
@@ -123,6 +118,7 @@ public:
 		listNode->next = iterator;
 		iterator->previous->next = listNode;
 		iterator->previous = listNode;
+		count++;
 		return listNode->node;
 	}
 
@@ -145,6 +141,7 @@ public:
 		{
 			tail = listNode;
 		}
+		count++;
 	};
 
 	//-adds existing object at bottom of list
@@ -164,19 +161,20 @@ public:
 		{
 			head = listNode;
 		}
+		count++;
 	};
 
 	//-adds existing object to list at specified index
 	//-throws error and returns null if specified index is out of bounds
 	void AddAtIndex(Type *node, int index) 
 	{
-		if (index >= Count() || index < 0)
+		if (index >= count || index < 0)
 		{
 			cout << "Index out of bounds" << endl;
 			return NULL;
 		}
 
-		int count = Count();
+		int c = count;
 
 		//checks if index is top or bottom of list
 		if (index == count)
@@ -190,23 +188,23 @@ public:
 
 		ListNode *iterator;
 
-		if (index > (count / 2))
+		if (index > (c / 2))
 		{
 			iterator = tail;
-			while (count >= index)
+			while (c >= index)
 			{
 				iterator = iterator->previous;
-				count--;
+				c--;
 			}
 		}
 		else
 		{
 			iterator = head;
-			count = 0;
-			while (count < index)
+			c = 0;
+			while (c < index)
 			{
 				iterator = iterator->next;
-				count++;
+				c++;
 			}
 		}
 		ListNode *listNode = new ListNode;
@@ -215,6 +213,7 @@ public:
 		listNode->next = iterator;
 		iterator->previous->next = listNode;
 		iterator->previous = listNode;
+		count++;
 	};
 
 	/////////////////////////////////////////////// UNTESTED BEYOND THIS POINT \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -230,8 +229,8 @@ public:
 		listNode->next = NULL;
 		listNode->previous = NULL;
 		delete(listNode);
+		count--;
 		return temp;
-
 	};
 
 	//-removes and returns object at bottom of list
@@ -245,6 +244,7 @@ public:
 		temp->next = NULL;
 		temp->previous = NULL;
 		delete(listNode);
+		count--;
 		return temp;
 	};
 
@@ -258,9 +258,9 @@ public:
 			return NULL;
 		}
 
-		count = Count();
+		c = count;
 
-		if (index == count)
+		if (index == c)
 		{
 			return PopBottom(*node);
 		}
@@ -271,23 +271,23 @@ public:
 
 		ListNode *iterator;
 
-		if (index > (count / 2))
+		if (index > (c / 2))
 		{
 			iterator = tail;
-			while (count >= index)
+			while (c >= index)
 			{
 				iterator = iterator->previous;
-				count--;
+				c--;
 			}
 		}
 		else
 		{
 			iterator = head;
-			count = 0;
-			while (count < index)
+			c = 0;
+			while (c < index)
 			{
 				iterator = iterator->next;
-				count++;
+				c++;
 			}
 		}
 
@@ -297,7 +297,7 @@ public:
 		iterator->next = NULL;
 		iterator->previous = NULL;
 		delete(iterator);
-
+		count--;
 		return temp;
 	};
 
@@ -322,15 +322,15 @@ public:
 	{
 		ListNode *listNode = head;
 
-		int count = 0;
+		int c = 0;
 		while (listNode->next != NULL)
 		{
 			if (listNode->node == node)
 			{
-				return count;
+				return c;
 			}
 			listNode = listNode->next;
-			count++;
+			c++;
 		}
 
 		return -1;
@@ -359,7 +359,7 @@ public:
 
 		delete iterator->node;
 		delete iterator;
-
+		count--;
 	};
 
 	//removes specified object from list at specified index
@@ -373,25 +373,25 @@ public:
 		}
 
 		ListNode *itterator = head;
-		int count = Count();
+		int c = count;
 
-		if (index >(count / 2))
+		if (index >(c / 2))
 		{
 			iterator = tail;
-			while (count >= index)
+			while (c >= index)
 			{
 				iterator = iterator->previous;
-				count--;
+				c--;
 			}
 		}
 		else
 		{
 			iterator = head;
-			count = 0;
-			while (count < index)
+			c = 0;
+			while (c < index)
 			{
 				iterator = iterator->next;
-				count++;
+				c++;
 			}
 		}
 
@@ -400,6 +400,7 @@ public:
 
 		delete iterator->node;
 		delete iterator;
+		c--;
 	};
 
 
@@ -428,10 +429,10 @@ public:
 	void PrintList()
 	{
 		ListNode *temp = head;
-		int count = 0;
+		int c = 0;
 		while (temp != NULL)
 		{
-			std::cout << "[" << count << "]" << temp->node->name << ", ";
+			std::cout << "[" << c << "]" << temp->node->name << ", ";
 			count++;
 			temp = temp->next;
 		}
