@@ -5,6 +5,7 @@ class UlinkedList
 	//~UlinkedLists();
 private:
 	//Container for linked list nodes
+	//To-Do: create smart pointer
 	struct ListNode
 	{
 		Type *node = NULL;
@@ -171,7 +172,7 @@ public:
 		if (index >= count || index < 0)
 		{
 			cout << "Index out of bounds" << endl;
-			return NULL;
+			return;
 		}
 
 		int c = count;
@@ -179,11 +180,11 @@ public:
 		//checks if index is top or bottom of list
 		if (index == count)
 		{
-			return AddAtBottom( *node );
+			return AddAtBottom( node );
 		}
 		else if (index == 0)
 		{
-			return AddAtTop( *node );
+			return AddAtTop( node );
 		}
 
 		ListNode *iterator;
@@ -216,8 +217,6 @@ public:
 		count++;
 	};
 
-	/////////////////////////////////////////////// UNTESTED BEYOND THIS POINT \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
 	//-removes and returns object at top of list
 	Type *PopTop() 
 	{
@@ -241,8 +240,8 @@ public:
 		tail = tail->previous;
 		tail->next = NULL;
 
-		temp->next = NULL;
-		temp->previous = NULL;
+		listNode->next = NULL;
+		listNode->previous = NULL;
 		delete(listNode);
 		count--;
 		return temp;
@@ -258,15 +257,15 @@ public:
 			return NULL;
 		}
 
-		c = count;
+		int c = count;
 
 		if (index == c)
 		{
-			return PopBottom(*node);
+			return PopBottom();
 		}
 		else if (index == 0)
 		{
-			return PopTop(*node);
+			return PopTop();
 		}
 
 		ListNode *iterator;
@@ -302,19 +301,61 @@ public:
 	};
 
 	//-returns object at head of list
-	Type GetHead() 
+	Type *GetHead() 
 	{
-		return *head->node;
+		return head->node;
 	};
 
 	//-returns object at tail of list
-	Type GetTail() 
+	Type *GetTail() 
 	{
-		return *tail->node;
+		return tail->node;
 	};
 
 	//-returns object at specified index
-	Type GetAtIndex(int index) {};
+	Type *GetAtIndex(int index) 
+	{
+		if (index >= Count() || index < 0)
+		{
+			cout << "Index out of bounds" << endl;
+			return NULL;
+		}
+
+		int c = count;
+
+		if (index == c)
+		{
+			return GetTail();
+		}
+		else if (index == 0)
+		{
+			return GetHead();
+		}
+
+		ListNode *iterator;
+
+		if (index > (c / 2))
+		{
+			iterator = tail;
+			while (c >= index)
+			{
+				iterator = iterator->previous;
+				c--;
+			}
+		}
+		else
+		{
+			iterator = head;
+			c = 0;
+			while (c < index)
+			{
+				iterator = iterator->next;
+				c++;
+			}
+		}
+
+		return iterator->node;
+	};
 
 	//-returns index of specified object within list
 	//-throws error and returns -1 if specified index is out of bounds
@@ -342,7 +383,7 @@ public:
 	{
 		if (!Contains(node))
 		{
-			std::cout << "List does not contain " << *node << endl;
+			std::cout << "List does not contain " << node << endl;
 			//Throw Error
 			return;
 		}
@@ -354,9 +395,38 @@ public:
 			iterator = iterator->next;
 		}
 
-		iterator->previous->next = iterator->next;
-		iterator->next->previous = iterator->next;
+		if (iterator == head)
+		{
+			if (count > 1)
+			{
+				head = iterator->next;
+				iterator->next->previous = NULL;
+			}
+			else
+			{
+				head = NULL;
+				tail = NULL;
+			}
+		}
+		else if (iterator == tail)
+		{
+			if (count > 1)
+			{
+				tail = iterator->previous;
+				iterator->previous->next = NULL;
+			}
+			else
+			{
+				head = NULL;
+				tail = NULL;
+			}
 
+		}
+		else
+		{
+			iterator->previous->next = iterator->next;
+			iterator->next->previous = iterator->next;
+		}
 		delete iterator->node;
 		delete iterator;
 		count--;
@@ -372,7 +442,7 @@ public:
 			return;
 		}
 
-		ListNode *itterator = head;
+		ListNode *iterator = head;
 		int c = count;
 
 		if (index >(c / 2))
@@ -426,6 +496,13 @@ public:
 		return false;
 	};
 
+	/////////////////////////////////////////////// UNTESTED BEYOND THIS POINT \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+	void Clear()
+	{
+
+	};
+
 	void PrintList()
 	{
 		ListNode *temp = head;
@@ -433,7 +510,7 @@ public:
 		while (temp != NULL)
 		{
 			std::cout << "[" << c << "]" << temp->node->name << ", ";
-			count++;
+			c++;
 			temp = temp->next;
 		}
 		std::cout << endl;
